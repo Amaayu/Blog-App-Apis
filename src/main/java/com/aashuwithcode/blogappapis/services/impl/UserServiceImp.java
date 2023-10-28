@@ -1,6 +1,7 @@
 package com.aashuwithcode.blogappapis.services.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,9 +48,20 @@ public class UserServiceImp implements UserService {
     @Override
     public UserDto getUserById(Integer userId) {
 
-        User user = this.userRepo.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
-        return this.userToDto(user);
+//        User user = this.userRepo.findById(userId);
+        Optional<User> optional = userRepo.findById(userId);
+        if(optional.isPresent()) {
+            UserDto dto = new UserDto();
+            User user = optional.get();
+            dto.setId(user.getId());
+            dto.setName(user.getName());
+            dto.setEmail(user.getEmail());
+            dto.setPassword(user.getPassword());
+            dto.setAbout(user.getAbout());
+            return dto;
+        }
+//                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        return null;
 
     }
 
